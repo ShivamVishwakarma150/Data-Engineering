@@ -386,5 +386,3 @@ INSERT INTO employee_with_constraints_tmp VALUES (5, 'Amit', 500, '2023-10-24');
    - **CHECK** → Validates conditions on data.  
 
 ---
-
-These notes summarize all the essential SQL commands and concepts from your provided queries. Let me know if you need any modifications! 🚀
