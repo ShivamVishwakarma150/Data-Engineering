@@ -478,11 +478,11 @@ SELECT * FROM employee WHERE name LIKE '%l';
 ```
 - **Finds names that end with "l"**.  
 
-### **7.4 Find Employees Whose Name Starts with "S" and Ends with "k"**  
+### **7.4 Find Employees Whose Name Starts with "S" and Ends with "m"**  
 ```sql
-SELECT * FROM employee WHERE name LIKE 'S%k';
+SELECT * FROM employee WHERE name LIKE 'S%m';
 ```
-- **Finds names that start with "S" and end with "k"**.  
+- **Finds names that start with "S" and end with "m"**.  
 
 ### **7.5 Find Employees Whose Name Has Exactly 5 Characters**  
 ```sql
