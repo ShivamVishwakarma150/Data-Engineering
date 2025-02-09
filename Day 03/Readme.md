@@ -1,3 +1,234 @@
+# **SQL Detailed Explanation of Key Topics**  
+
+## **1. Primary Key**  
+A **Primary Key** is a column (or a set of columns) that **uniquely identifies each row** in a table.  
+
+### **Characteristics of a Primary Key**  
+✅ **Uniqueness** → Each primary key value must be **unique** for each row.  
+✅ **Immutable** → The value **should not change** once assigned.  
+✅ **Simplicity** → It should be **as simple as possible** (usually a single column).  
+✅ **Non-Intelligent** → It should not have any meaningful business information (e.g., avoid using phone numbers, email IDs, etc.).  
+✅ **Indexed** → Primary keys are automatically indexed, improving **query performance**.  
+✅ **Referential Integrity** → Used as a reference in **Foreign Keys** in other tables.  
+✅ **Data Type** → Commonly used types include **INTEGER, BIGINT, and UUIDs**.  
+
+### **Example of Creating a Primary Key**
+```sql
+CREATE TABLE employees (
+    emp_id INT PRIMARY KEY,
+    name VARCHAR(100),
+    age INT
+);
+```
+- `emp_id` is the **Primary Key** and ensures that each employee has a **unique** identifier.  
+
+---
+
+## **2. Foreign Key**  
+A **Foreign Key** is a column that **establishes a relationship between two tables** by referencing a **Primary Key** in another table.  
+
+### **Characteristics of a Foreign Key**  
+✅ **Ensures Referential Integrity** → Prevents invalid data entry by enforcing relationships.  
+✅ **Can Be NULL** → If not restricted, Foreign Keys **can store NULL values**.  
+✅ **Must Match a Primary Key** → The Foreign Key **must reference an existing Primary Key** in another table.  
+✅ **No Uniqueness Required** → Foreign Key values can be **duplicated across multiple rows**.  
+
+### **Example of a Foreign Key**
+```sql
+CREATE TABLE departments (
+    dept_id INT PRIMARY KEY,
+    dept_name VARCHAR(100)
+);
+
+CREATE TABLE employees (
+    emp_id INT PRIMARY KEY,
+    name VARCHAR(100),
+    dept_id INT,
+    FOREIGN KEY (dept_id) REFERENCES departments(dept_id)
+);
+```
+- `dept_id` in the `employees` table references `dept_id` in `departments`, ensuring that employees can only be assigned to **valid departments**.  
+
+---
+
+## **3. DELETE Command**  
+The `DELETE` statement is used to **remove specific records** from a table.  
+
+### **Syntax**  
+```sql
+DELETE FROM table_name WHERE condition;
+```
+
+### **Example**  
+```sql
+DELETE FROM Students WHERE ID = 5;
+```
+- Deletes the record where `ID = 5` in the `Students` table.  
+
+⚠ **Warning**: Running `DELETE` without a `WHERE` clause will **delete all rows** from the table!  
+
+---
+
+## **4. DROP vs TRUNCATE vs DELETE**  
+
+| Feature       | DELETE | TRUNCATE | DROP |
+|--------------|--------|----------|------|
+| Removes Data | ✅ Yes | ✅ Yes | ✅ Yes |
+| Removes Table Structure | ❌ No | ❌ No | ✅ Yes |
+| Can Be Rolled Back | ✅ Yes | ❌ No | ❌ No |
+| Uses WHERE Clause | ✅ Yes | ❌ No | ❌ No |
+| Resets Auto-Increment | ❌ No | ✅ Yes | ✅ Yes |
+
+### **Example Usage**  
+- **DELETE:**  
+  ```sql
+  DELETE FROM employees WHERE age > 40;
+  ```
+  - Removes employees older than 40.  
+
+- **TRUNCATE:**  
+  ```sql
+  TRUNCATE TABLE employees;
+  ```
+  - Removes all records **but keeps the table structure**.  
+
+- **DROP:**  
+  ```sql
+  DROP TABLE employees;
+  ```
+  - Deletes the table **completely**.  
+
+---
+
+## **5. SQL Joins**  
+SQL **Joins** are used to **combine data from multiple tables** based on a related column.  
+
+### **5.1 INNER JOIN**  
+✅ Returns **only matching records** from both tables.  
+```sql
+SELECT Customers.customer_id, Customers.first_name, Orders.amount 
+FROM Customers
+INNER JOIN Orders ON Orders.customer = Customers.customer_id;
+```
+- Fetches customers **only if they have placed an order**.  
+
+### **5.2 LEFT JOIN**  
+✅ Returns **all records from the left table** and **matching records from the right table**.  
+✅ If no match is found, NULL is returned.  
+```sql
+SELECT Customers.customer_id, Customers.first_name, Orders.amount 
+FROM Customers
+LEFT JOIN Orders ON Orders.customer = Customers.customer_id;
+```
+- Fetches **all customers**, even if they haven't placed an order.  
+
+### **5.3 RIGHT JOIN**  
+✅ Returns **all records from the right table** and **matching records from the left table**.  
+```sql
+SELECT Customers.customer_id, Customers.first_name, Orders.amount 
+FROM Customers
+RIGHT JOIN Orders ON Orders.customer = Customers.customer_id;
+```
+- Fetches **all orders**, even if the customer does not exist.  
+
+### **5.4 FULL JOIN**  
+✅ Returns **all records from both tables**, with NULLs where there is no match.  
+```sql
+SELECT Customers.customer_id, Customers.first_name, Orders.amount 
+FROM Customers
+FULL OUTER JOIN Orders ON Orders.customer = Customers.customer_id;
+```
+
+### **5.5 CROSS JOIN**  
+✅ Returns **a Cartesian product** of two tables (**matches every row in the first table with every row in the second table**).  
+```sql
+SELECT Model.car_model, Color.color_name
+FROM Model
+CROSS JOIN Color;
+```
+
+---
+
+## **6. Self Join**  
+A **Self Join** is a join where a table is **joined with itself**.  
+
+### **Example: Finding Employee Managers**  
+```sql
+SELECT e1.emp_id, e1.name, e2.name AS ManagerName
+FROM Employees e1
+JOIN Employees e2 ON e1.manager_id = e2.emp_id;
+```
+- Retrieves **each employee along with their manager's name**.  
+
+---
+
+## **7. GROUP BY with ROLLUP**  
+✅ `GROUP BY` is used to **aggregate data**.  
+✅ `ROLLUP` adds **subtotals and grand totals**.  
+
+### **Example Usage**  
+```sql
+SELECT
+    SUM(payment_amount),
+    YEAR(payment_date) AS 'Payment Year',
+    store_id AS 'Store'
+FROM payment
+GROUP BY YEAR(payment_date), store_id WITH ROLLUP
+ORDER BY YEAR(payment_date), store_id;
+```
+- **Adds subtotals and grand totals** for each group.  
+
+---
+
+## **8. Views in SQL**  
+✅ A **View** is a virtual table based on a query.  
+✅ It simplifies complex queries by storing frequently used SELECT statements.  
+
+### **Example of Creating a View**  
+```sql
+CREATE VIEW HighPricedProducts AS
+SELECT ProductName, Price
+FROM Products
+WHERE Price > 30;
+```
+- **Fetches all products with a price greater than 30** and stores it as a **virtual table**.  
+
+### **Advantages of Views**  
+✔ **Security** → Restricts access to certain data.  
+✔ **Simplifies Queries** → Encapsulates complex logic.  
+✔ **Performance Optimization** → Speeds up frequently used queries.  
+
+---
+
+## **Key Takeaways**  
+
+### **🔹 Primary Key**  
+- **Ensures uniqueness** and is **automatically indexed**.  
+
+### **🔹 Foreign Key**  
+- **Maintains relationships** between tables.  
+
+### **🔹 DELETE vs TRUNCATE vs DROP**  
+- `DELETE` removes specific records, `TRUNCATE` clears the table, `DROP` removes the table.  
+
+### **🔹 Joins**  
+- `INNER JOIN` → Only matching records.  
+- `LEFT JOIN` → All records from the left table, matching from right.  
+- `RIGHT JOIN` → All records from the right table, matching from left.  
+- `FULL JOIN` → All records from both tables.  
+- `CROSS JOIN` → Cartesian product.  
+- `SELF JOIN` → Table joins itself.  
+
+### **🔹 GROUP BY & ROLLUP**  
+- Aggregates data and adds **subtotals** and **totals**.  
+
+### **🔹 Views**  
+- **Virtual tables** that simplify complex queries and **improve security**.  
+
+---
+
+<br/>
+
 # **SQL Advanced Concepts - Detailed Definitions**  
 
 ## **1. `IS NULL` and `IS NOT NULL`**  
