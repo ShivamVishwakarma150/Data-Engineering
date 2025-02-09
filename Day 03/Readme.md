@@ -205,7 +205,7 @@ CREATE TABLE employees_full_data (
 ```
 ### **10.2 Inserting Data**
 ```sql
-INSERT INTO employees_full_data VALUES (1, 'Shashank', 3), 
+INSERT INTO employees_full_data VALUES (1, 'Shivam', 3), 
                                        (2, 'Amit', 3), 
                                        (3, 'Rajesh', 4), 
                                        (4, 'Ankit', 6), 
