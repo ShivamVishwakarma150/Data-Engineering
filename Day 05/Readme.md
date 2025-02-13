@@ -149,3 +149,94 @@ If a node fails, Hadoop automatically **re-replicates lost blocks** from existin
 HDFS uses **large blocks** to handle **big data efficiently**, minimize **metadata overhead**, and support **fault tolerance through replication**.
 
 ---
+
+<br/>
+<br/>
+
+# **📌 Secondary NameNode vs. Standby NameNode in Hadoop**  
+
+In Hadoop, **both the Secondary NameNode and Standby NameNode** play a role in managing the **NameNode’s metadata**, but their functions are **very different**. Many people mistakenly assume that the **Secondary NameNode is a backup NameNode**, but this is **incorrect**.
+
+---
+
+## **🟢 1. What is Secondary NameNode?**  
+
+✅ The **Secondary NameNode (SNN)** is **NOT a failover NameNode**.  
+✅ Its primary job is to **periodically merge the edit logs** with the **fsimage** to create an updated snapshot of the metadata.  
+✅ It helps in **reducing the edit log size** so that the NameNode can restart faster.  
+
+### **🔹 How Does Secondary NameNode Work?**  
+1️⃣ **Copies fsimage and edit logs from NameNode**.  
+2️⃣ **Applies edit logs to the fsimage** (i.e., merges changes).  
+3️⃣ **Saves the new fsimage back to NameNode**.  
+4️⃣ **Deletes old edit logs** after merging to reduce memory usage.  
+
+📌 **Understanding:**  
+💡 *Think of the Secondary NameNode as a "metadata assistant" that cleans up logs to ensure the NameNode starts faster.*  
+
+---
+
+## **🟢 2. What is Standby NameNode?**  
+
+✅ The **Standby NameNode (SBN)** is a **hot backup** that takes over immediately if the **Active NameNode fails**.  
+✅ It runs in a **high-availability (HA) Hadoop cluster**.  
+✅ It constantly **syncs with the Active NameNode** using **journal nodes** to keep its metadata up to date.  
+
+### **🔹 How Does Standby NameNode Work?**  
+1️⃣ **Continuously receives metadata updates** from Active NameNode.  
+2️⃣ **Uses JournalNodes to keep itself in sync** with Active NameNode.  
+3️⃣ If Active NameNode **fails**, the Standby NameNode **automatically takes over**.  
+
+📌 **Understanding:**  
+💡 *The Standby NameNode is a "live duplicate" of the Active NameNode and ensures high availability of the Hadoop cluster.*  
+
+---
+
+## **🟢 3. Key Differences Between Secondary NameNode and Standby NameNode**  
+
+| **Feature** | **Secondary NameNode** | **Standby NameNode** |
+|------------|----------------|----------------|
+| **Purpose** | Merges edit logs to create a clean `fsimage`. | Acts as a **backup** for failover in HA mode. |
+| **Failover Support** | ❌ **NOT a failover** NameNode. | ✅ **Supports automatic failover**. |
+| **Real-Time Sync** | ❌ Periodic sync only. | ✅ **Continuously syncs** with Active NameNode. |
+| **Journal Nodes** | ❌ Not used. | ✅ Uses **JournalNodes** for synchronization. |
+| **Cluster Type** | Works in **non-HA Hadoop clusters**. | Works in **HA-enabled clusters**. |
+| **Metadata Storage** | Stores a **backup copy of fsimage** but doesn’t take over. | Stores **live metadata and can take over** instantly. |
+| **Data Recovery** | Helps in **recovering metadata** if NameNode restarts. | **Takes over instantly** if Active NameNode crashes. |
+
+📌 **Understanding:**  
+💡 *The Secondary NameNode only helps with metadata cleanup, while the Standby NameNode ensures high availability by acting as a live backup.*  
+
+---
+
+## **🟢 4. When to Use Secondary NameNode vs. Standby NameNode?**  
+
+| **Use Case** | **Solution** |
+|-------------|-------------|
+| **Small clusters** where failover is not critical. | Use **Secondary NameNode** (manual restart needed if NameNode fails). |
+| **Large production clusters** where downtime is unacceptable. | Use **Standby NameNode** (automatic failover). |
+
+📌 **Understanding:**  
+💡 *For enterprise-level production environments, always use a **Standby NameNode** for high availability.*  
+
+---
+
+## **🟢 5. High Availability (HA) Configuration with Standby NameNode**  
+
+To enable **HA mode** in Hadoop:  
+1️⃣ **Set up two NameNodes** – One **Active** and one **Standby**.  
+2️⃣ **Use JournalNodes** to sync metadata between them.  
+3️⃣ **Configure Zookeeper** to monitor NameNode health and trigger failover if needed.  
+
+📌 **Understanding:**  
+💡 *Without HA mode, if a NameNode crashes, the entire cluster stops working. Standby NameNode prevents this by taking over instantly.*  
+
+---
+
+## **✅ Summary: Key Takeaways**  
+📌 **Secondary NameNode is NOT a backup** – It only **merges metadata** to speed up NameNode recovery.  
+📌 **Standby NameNode is a failover NameNode** – It takes over automatically when Active NameNode fails.  
+📌 **Use Standby NameNode in production** for **high availability**.  
+📌 **JournalNodes + Zookeeper** ensure real-time failover in an HA-enabled cluster.  
+
+🚀 **Want to set up HA mode in Hadoop?** Let me know if you need **configuration steps!** 😊
