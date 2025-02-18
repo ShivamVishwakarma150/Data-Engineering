@@ -479,3 +479,306 @@ It has two parts:
 📌 **YARN** introduced better resource management for **scalability & performance**.  
 📌 **HDFS Block vs. Input Split**: Blocks are for **storage**, Splits are for **processing**.  
 📌 **Key YARN Components**: **Resource Manager, Node Manager, Application Master, Containers**.  
+
+
+
+---
+# **Hadoop 1.0 (Before 2012)**
+- **Processing Model:** Only **MapReduce** was available for data processing.
+- **Cluster Resource Management:** MapReduce itself handled both **data processing** and **cluster resource management**, which was inefficient.
+- **Storage Layer:** **HDFS (Hadoop Distributed File System)** was used for reliable, redundant storage.
+
+**Limitations of Hadoop 1.0:**
+- **Scalability Issues:** MapReduce was tightly coupled with cluster resource management, making it inefficient for handling multiple jobs.
+- **Limited Processing Models:** Only **batch processing** with MapReduce was supported.
+- **Resource Utilization:** Jobs had to wait for resources, leading to inefficient cluster usage.
+
+---
+
+# **Hadoop 2.7 (Since 2012)**
+- **Processing Model:** Introduced support for **multiple processing models** such as **Spark, Storm, etc.**, in addition to MapReduce.
+- **Cluster Resource Management:** **YARN (Yet Another Resource Negotiator)** was introduced, which separated resource management from data processing.
+- **Storage Layer:** HDFS remained the same as a reliable storage system.
+
+**Advantages of Hadoop 2.7:**
+✅ **Better Resource Utilization:** YARN efficiently allocates resources, improving cluster performance.  
+✅ **Multiple Processing Models:** Supports **real-time (Storm), in-memory (Spark), and batch processing (MapReduce)**.  
+✅ **Scalability & Flexibility:** Can handle more concurrent jobs efficiently.
+
+---
+
+### **Key Differences Between Hadoop 1.0 & 2.7**
+| Feature | Hadoop 1.0 | Hadoop 2.7 |
+|---------|------------|------------|
+| **Processing Framework** | Only **MapReduce** | **MapReduce, Spark, Storm, etc.** |
+| **Cluster Resource Management** | Handled by **MapReduce** | **Handled by YARN** |
+| **Storage System** | **HDFS** | **HDFS** (unchanged) |
+| **Efficiency** | Limited parallel processing | Better resource allocation & job scheduling |
+| **Scalability** | Limited due to tight coupling | Highly scalable |
+
+🚀 **Conclusion:** Hadoop 2.7 brought major improvements by introducing **YARN**, enabling multiple processing models beyond MapReduce and optimizing resource utilization.
+
+
+# **Detailed Explanation of YARN in Hadoop**
+
+YARN (Yet Another Resource Negotiator) is the resource management layer in Hadoop. It was introduced with Hadoop 2.x to improve the scalability and efficiency of cluster resource management.
+
+---
+
+## **Why YARN?**
+Before YARN, Hadoop 1.0 used a **monolithic** approach where MapReduce handled both **resource management** and **job scheduling**. This had several limitations:
+- **Scalability issues** due to a single JobTracker managing all jobs.
+- **Lack of multi-framework support** (only MapReduce was supported).
+- **Inefficient resource utilization**, as resources were tied to jobs and not dynamically allocated.
+
+With the introduction of YARN, Hadoop became more **flexible**, allowing multiple data processing engines (MapReduce, Spark, Storm, etc.) to share resources efficiently.
+
+---
+
+## **Components of YARN**
+YARN consists of **four** main components:
+
+### **1. Resource Manager (RM)**
+The **Resource Manager (RM)** is the **master daemon** responsible for managing resources across the Hadoop cluster. It has two key sub-components:
+   - **Scheduler:** Allocates resources to running applications based on policies (FIFO, Fair Scheduling, Capacity Scheduler).
+   - **Application Manager:** Manages the lifecycle of applications, including starting the Application Master (AM) and monitoring applications.
+
+### **2. Node Manager (NM)**
+The **Node Manager (NM)** runs on each **worker node** and is responsible for:
+   - Monitoring container resource usage.
+   - Reporting node health to the Resource Manager.
+   - Managing the execution of tasks within containers.
+
+### **3. Application Master (AM)**
+Each job has its own **Application Master (AM)**, which:
+   - Negotiates resources with the Resource Manager.
+   - Works with the Node Manager to launch containers.
+   - Monitors the execution of tasks and handles failures.
+
+### **4. Containers**
+A **container** is the basic unit of resource allocation in YARN. It includes:
+   - CPU, memory, and disk resources for a specific task.
+   - Containers are dynamically allocated and released to improve resource utilization.
+
+---
+
+## **How YARN Works? (Execution Flow)**
+### **1. Application Submission**
+   - The client submits a job to the **Resource Manager (RM)**.
+   - RM assigns a unique **Application ID**.
+
+### **2. Application Master Initialization**
+   - RM starts the **Application Master (AM)** on a node.
+   - AM requests resources from RM.
+
+### **3. Resource Allocation**
+   - The **Scheduler** in RM allocates **Containers** based on job requirements.
+
+### **4. Container Execution**
+   - AM contacts **Node Managers (NM)** to start containers.
+   - Tasks are executed inside these containers.
+
+### **5. Monitoring and Fault Tolerance**
+   - AM monitors the execution of tasks.
+   - If a container fails, AM requests a new one from RM and retries the task.
+
+### **6. Job Completion and Cleanup**
+   - After successful execution, AM releases resources and informs RM.
+   - The client retrieves the results.
+
+---
+
+## **Advantages of YARN**
+✅ **Supports multiple frameworks** (MapReduce, Spark, Storm, etc.).  
+✅ **Improves cluster utilization** by dynamically allocating resources.  
+✅ **Better scalability** than Hadoop 1.0.  
+✅ **Fault-tolerant** execution with automatic recovery.  
+
+YARN transformed Hadoop into a **multi-purpose** big data processing platform, making it highly **scalable** and **efficient**. 🚀
+
+
+<br/>
+<br/>
+
+# **Detailed Explanation of YARN Components (Based on the Diagram)**
+
+![alt text](image-1.png)
+
+This diagram illustrates the **YARN (Yet Another Resource Negotiator) architecture** and its components in a Hadoop cluster. YARN is responsible for **resource management and job scheduling** in Hadoop.
+
+---
+
+## **1. Components in the Diagram**
+The diagram consists of the following major components:
+
+### **1️⃣ Client**
+- The **client** submits a job to the YARN **Resource Manager**.
+- The job request contains information about the application (e.g., MapReduce job, Spark job).
+- Represented in the diagram as two computer systems on the left.
+
+---
+
+### **2️⃣ Resource Manager (RM)**
+- The **Resource Manager** is the central authority in YARN.
+- It manages resources across the cluster and schedules jobs.
+- It has two main responsibilities:
+  - **Scheduler** → Allocates resources to running applications.
+  - **Application Manager** → Manages the Application Master (AM) lifecycle.
+- In the diagram, RM is at the center.
+
+#### **Job Flow in RM**
+- **Job Submission (🔴 Red Arrow):** The client submits a job to the RM.
+- **Resource Request (📶 Dashed Arrow):** The Application Master (AM) requests resources from RM.
+- **Node Status Update (⬛ Solid Arrow):** Node Managers report their health status to RM.
+
+---
+
+### **3️⃣ Node Manager (NM)**
+- Runs on each worker node in the cluster.
+- Manages the execution of tasks within **Containers**.
+- Communicates with the **Resource Manager** and **Application Master**.
+- Ensures that resources (CPU, memory, disk) are not overused.
+- **Each NM reports to the RM** about its availability.
+- In the diagram, Node Managers are purple boxes.
+
+---
+
+### **4️⃣ Application Master (AM)**
+- Every job has its own **Application Master**.
+- Responsible for:
+  - Requesting resources from RM.
+  - Assigning tasks to **containers**.
+  - Monitoring task execution.
+  - Handling failures and retries.
+- Shown as **red boxes** in the diagram.
+
+---
+
+### **5️⃣ Containers**
+- The basic unit of resource allocation in YARN.
+- A container can run **MapReduce tasks, Spark jobs, or any other processing task**.
+- Containers are allocated by **Node Managers** as per the AM’s request.
+- In the diagram, containers are **green boxes**.
+
+---
+
+## **2. How YARN Works (Step-by-Step Execution Flow)**
+### **Step 1: Job Submission**
+- The **client submits a job** (e.g., a MapReduce job) to the **Resource Manager**.
+- (🔴 Red Arrow) **Job submission request** is sent to RM.
+
+### **Step 2: Application Master Initialization**
+- RM starts the **Application Master (AM)** on a **Node Manager (NM)**.
+- (📶 Dashed Arrow) The **AM requests resources** from the RM.
+
+### **Step 3: Resource Allocation**
+- RM **allocates containers** based on availability.
+- (⬛ Solid Arrow) **Node Managers report their health status** to RM.
+
+### **Step 4: Task Execution in Containers**
+- AM assigns tasks to **Containers** running on Node Managers.
+- The containers execute the task (e.g., MapReduce, Spark processing).
+
+### **Step 5: Monitoring and Completion**
+- AM **monitors the tasks** running in the containers.
+- If a task fails, AM requests a new container and retries the task.
+- Once the job is finished, AM notifies RM and releases resources.
+
+---
+
+## **3. Acknowledgment (ACK) in YARN**
+### **How Acknowledgment Works?**
+- **Job Completion ACK** → When the job is completed, AM sends an acknowledgment (ACK) to RM.
+- **Container Allocation ACK** → When a container is successfully assigned to a task, the NM sends an ACK to AM.
+- **Node Status ACK** → NM regularly sends an ACK to RM to indicate it is alive and functioning.
+
+---
+
+## **4. Key Takeaways**
+✅ **YARN enables multi-framework processing** (not just MapReduce, but also Spark, Storm, etc.).  
+✅ **Decouples resource management from job execution**, improving scalability.  
+✅ **Efficient resource utilization** using dynamic allocation.  
+✅ **Fault tolerance** through AM retries and NM status reporting.  
+
+This is how YARN efficiently **manages resources** and **executes jobs** in Hadoop! 🚀
+
+
+<br/>
+<br/>
+
+# **Detailed Explanation of YARN in Hadoop**
+![alt text](image-3.png)
+YARN (Yet Another Resource Negotiator) is the resource management layer in Hadoop. It was introduced with Hadoop 2.x to improve the scalability and efficiency of cluster resource management.
+
+---
+
+## **Why YARN?**
+Before YARN, Hadoop 1.0 used a **monolithic** approach where MapReduce handled both **resource management** and **job scheduling**. This had several limitations:
+- **Scalability issues** due to a single JobTracker managing all jobs.
+- **Lack of multi-framework support** (only MapReduce was supported).
+- **Inefficient resource utilization**, as resources were tied to jobs and not dynamically allocated.
+
+With the introduction of YARN, Hadoop became more **flexible**, allowing multiple data processing engines (MapReduce, Spark, Storm, etc.) to share resources efficiently.
+
+---
+
+## **Components of YARN**
+YARN consists of **four** main components:
+
+### **1. Resource Manager (RM)**
+The **Resource Manager (RM)** is the **master daemon** responsible for managing resources across the Hadoop cluster. It has two key sub-components:
+   - **Scheduler:** Allocates resources to running applications based on policies (FIFO, Fair Scheduling, Capacity Scheduler).
+   - **Application Manager:** Manages the lifecycle of applications, including starting the Application Master (AM) and monitoring applications.
+
+### **2. Node Manager (NM)**
+The **Node Manager (NM)** runs on each **worker node** and is responsible for:
+   - Monitoring container resource usage.
+   - Reporting node health to the Resource Manager.
+   - Managing the execution of tasks within containers.
+
+### **3. Application Master (AM)**
+Each job has its own **Application Master (AM)**, which:
+   - Negotiates resources with the Resource Manager.
+   - Works with the Node Manager to launch containers.
+   - Monitors the execution of tasks and handles failures.
+
+### **4. Containers**
+A **container** is the basic unit of resource allocation in YARN. It includes:
+   - CPU, memory, and disk resources for a specific task.
+   - Containers are dynamically allocated and released to improve resource utilization.
+
+---
+
+## **How YARN Works? (Execution Flow)**
+### **1. Application Submission**
+   - The client submits a job to the **Resource Manager (RM)**.
+   - RM assigns a unique **Application ID**.
+
+### **2. Application Master Initialization**
+   - RM starts the **Application Master (AM)** on a node.
+   - AM requests resources from RM.
+
+### **3. Resource Allocation**
+   - The **Scheduler** in RM allocates **Containers** based on job requirements.
+
+### **4. Container Execution**
+   - AM contacts **Node Managers (NM)** to start containers.
+   - Tasks are executed inside these containers.
+
+### **5. Monitoring and Fault Tolerance**
+   - AM monitors the execution of tasks.
+   - If a container fails, AM requests a new one from RM and retries the task.
+
+### **6. Job Completion and Cleanup**
+   - After successful execution, AM releases resources and informs RM.
+   - The client retrieves the results.
+
+---
+
+## **Advantages of YARN**
+✅ **Supports multiple frameworks** (MapReduce, Spark, Storm, etc.).  
+✅ **Improves cluster utilization** by dynamically allocating resources.  
+✅ **Better scalability** than Hadoop 1.0.  
+✅ **Fault-tolerant** execution with automatic recovery.  
+
+YARN transformed Hadoop into a **multi-purpose** big data processing platform, making it highly **scalable** and **efficient**. 🚀
