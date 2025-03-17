@@ -2334,7 +2334,7 @@ By tuning these memory configurations, Spark applications can be **more efficien
 <br/>
 
 # **Dynamic Occupancy Mechanism in Apache Spark**
-![alt text](image-3.png)
+![alt text](image-5.png)
 The **Dynamic Occupancy Mechanism** in Apache Spark is responsible for **memory sharing** between **Execution Memory** and **Storage Memory**. This mechanism ensures that unused memory in one section can be utilized by the other to optimize performance.
 
 ---
