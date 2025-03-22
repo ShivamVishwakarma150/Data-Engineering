@@ -2642,15 +2642,15 @@ Once we fix **5 cores per executor**, we need to determine **how many executors 
 - **Total available cores per node:** **15 (leaving 1 core for system and YARN daemons).**
 - **Executors per node:**  
   \[
-  15 \text{ (available cores)} / 5 \text{ (cores per executor)} = 3 \text{ executors per node}
+  15 (available cores) / 5  (cores per executor) = 3  executors per node
   \]
 - **Total executors in cluster:**  
   \[
-  6 \text{ (nodes)} × 3 = 18 \text{ executors}
+  6(nodes) × 3 = 18  executors
   \]
 - **Application Master (AM)**: In YARN mode, **one executor is reserved for AM**, leaving us with:
   \[
-  18 - 1 = 17 \text{ executors available for Spark jobs.}
+  18 - 1 = 17 executors available for Spark jobs.
   \]
 - This **17** is the number we specify using:
   ```shell
@@ -2666,7 +2666,7 @@ Each executor needs memory to process Spark tasks efficiently.
 - **Executors per node:** **3** (as calculated earlier).
 - **Memory per executor:**
   \[
-  63GB / 3 = 21GB \text{ per executor.}
+  63GB / 3 = 21GB { per executor.}
   \]
 
 However, YARN requires some memory overhead for managing Spark processes.
@@ -2674,11 +2674,11 @@ However, YARN requires some memory overhead for managing Spark processes.
 ### **Calculating Overhead Memory**
 YARN overhead memory is calculated using:  
   \[
-  \text{max}(384MB, 0.07 \times \text{spark.executor.memory})
+  max(384MB, 0.07 spark.executor.memory)
   \]
 - **For 21GB executor memory:**  
   \[
-  0.07 \times 21GB = 1.47GB
+  0.07 times 21GB = 1.47GB
   \]
 - Since **1.47GB > 384MB**, we take **1.47GB as the overhead**.
 
@@ -2834,7 +2834,7 @@ Each executor needs memory to process Spark tasks efficiently.
 - **Executors per node:** **6** (as calculated earlier).
 - **Memory per executor:**
   \[
-  63GB / 6 = 10GB \text{ per executor.}
+  63GB / 6 = 10GB per executor.
   \]
 
 However, **YARN requires some memory overhead** for managing Spark processes.
@@ -2842,7 +2842,7 @@ However, **YARN requires some memory overhead** for managing Spark processes.
 ### **Calculating Overhead Memory**
 YARN overhead memory is calculated using:  
   \[
-  \text{max}(384MB, 0.07 \times \text{spark.executor.memory})
+  max(384MB, 0.07 spark.executor.memory)
   \]
 - **For 10GB executor memory:**  
   \[
