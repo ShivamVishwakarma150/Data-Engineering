@@ -1,5 +1,5 @@
 # News API Data Pipeline Project Explanation
-
+![alt text](<Untitled diagram-2025-04-20-091127.png>)
 This project is a comprehensive data pipeline that fetches news articles from the NewsAPI, processes them, stores them in Google Cloud Storage (GCS), and then loads them into Snowflake for analysis. Here's a detailed breakdown of each component:
 
 ## 1. Data Fetching (`fetch_news.py`)
